@@ -1,0 +1,5 @@
+
+Windows 10
+QT5.8 									(qt-opensource-windows-x86-msvc2013_64-5.8.0)
+VisualStudio 2013 plugin 		qt-vs-addin-1.2.5
+
