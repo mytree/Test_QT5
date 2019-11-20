@@ -43,12 +43,14 @@
 #include "Test/Base/CH09/0901_timer.h"
 #include "Test/Base/CH09/0902_thread.h"
 #include "Test/Base/CH09/0903_process.h"
+#include "Test/Base/CH10/1001_move_event.h"
 
 int main(int nArgNum, char *ppArgs[]) {
 
 	int nRet = 0;
 	
-	C0903_TestProcess test;
+	C1001_TestMoveEvent test;
+	//C0903_TestProcess test;
 	//C0902_TestThread test;
 	//C0901_TestTimer test;
 	//C0805_TestSVG test;

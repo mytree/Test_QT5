@@ -2,9 +2,10 @@
 #pragma once
 
 
-#include <QtCore/QCoreApplication>
+//#include <QtCore/QCoreApplication>
 #include <QtCore/QTimer>
 #include <QtCore/QThread>
+#include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QStandardItemModel>
@@ -43,6 +44,8 @@
 #include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QMdiArea>			// MDI Áö¿ø
 #include <QtGui/QPainter>
+#include <QtNetwork/QNetworkAccessManager>
+
 
 #if defined(WIN32) | defined(WIN64)
 #	if defined(DEBUG) | defined(_DEBUG)

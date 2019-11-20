@@ -77,6 +77,9 @@
     <Filter Include="Source Files\Test\Base\CH09">
       <UniqueIdentifier>{e03ea66f-3a1a-476a-b67f-620d6e29a54b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Test\Base\CH10">
+      <UniqueIdentifier>{7a0a9408-fc33-42f0-b6cf-4f8488c68559}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -140,6 +143,12 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_0902_thread.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_1001_move_event.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_1001_move_event.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
@@ -281,5 +290,13 @@
     <CustomBuild Include="Test\Base\CH09\0902_thread.h">
       <Filter>Header Files\Test\Base\CH09</Filter>
     </CustomBuild>
+    <CustomBuild Include="Test\Base\CH10\1001_move_event.h">
+      <Filter>Header Files\Test\Base\CH10</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Makefile">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
