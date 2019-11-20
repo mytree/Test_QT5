@@ -1,5 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-./Build/Test_QT5/Test_QT5.sdf
+./Build/Test_QT5.sdf
 ./Build/Test_QT5/GeneratedFiles/
 ./Bin64_Debug/Test_QT5*

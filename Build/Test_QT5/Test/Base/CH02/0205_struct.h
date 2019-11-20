@@ -37,7 +37,7 @@ public:
 	virtual int OnTest(int nArgNum, char** ppArgs) {
 		struct man *Julia;
 		Julia = (struct man*)malloc(sizeof(struct man));
-		setMan(Julia, "Julia", 23, 168, 55);
+		setMan(Julia, (char*)"Julia", 23, 168, 55);
 		printName(Julia);
 		printAge(Julia);
 		printFeet(Julia);

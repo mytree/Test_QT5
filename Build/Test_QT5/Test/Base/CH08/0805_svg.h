@@ -1,6 +1,15 @@
 
 #pragma once
 
+#ifdef __linux__
+class C0805_TestSVG : public ITestObject {
+public:
+	virtual int OnTest(int nArgNum, char **ppArgs) {
+		return -1;
+	}
+};
+
+#else
 #include <QtSvg/QSvgWidget>
 #include <QtSvg/QSvgRenderer>
 
@@ -36,3 +45,5 @@ public:
 		return app.exec();
 	}
 };
+
+#endif

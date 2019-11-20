@@ -1,8 +1,15 @@
 
 #pragma once
 
-#include <QtMultimedia/QSound>
-
+#ifdef __linux__
+class C0703_Sound : public ITestObject {
+public:
+	virtual int OnTest(int nArgNum, char **ppArgs) {
+		return -1;
+	}
+};
+#else
+#	include <QtMultimedia/QSound>
 class C0703_Sound : public ITestObject {
 public:
 	virtual int OnTest(int nArgNum, char **ppArgs) {
@@ -12,3 +19,5 @@ public:
 		return app.exec();
 	}
 };
+#endif
+

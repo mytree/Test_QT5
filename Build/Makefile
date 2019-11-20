@@ -46,18 +46,34 @@ endif
 ############################################################################
 #	Additional Path
 
-SRC_STDAFX			= $(SRC_DIR)/stdafx.cpp
+#SRC_STDAFX			= $(SRC_DIR)/stdafx.cpp
 #SRC_FILES			= $(shell find $(SRC_DIR) -name '*.cpp' ! -name 'stdafx.cpp')
-SRC_FILES			= $(shell find $(SRC_DIR)/Test -name '*.cpp' ! -name 'stdafx.cpp')
+# OBJ_STDAFX			= $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_STDAFX))
+
+# MOC_H_FILES			= $(SRC_DIR)/Test/Base/CH05/0501_main_window.h
+# MOC_H_FILES			+= $(SRC_DIR)/Test/Base/CH05/0502_table_dialog.h
+# MOC_H_FILES			+= $(SRC_DIR)/Test/Base/CH06/0601_validator.h
+# MOC_H_FILES			+= $(SRC_DIR)/Test/Base/CH07/0701_test_editor.h
+# MOC_H_FILES			+= $(SRC_DIR)/Test/Base/CH07/0702_dir.h
+# MOC_H_FILES			+= $(SRC_DIR)/Test/Base/CH09/0901_timer.h
+# MOC_H_FILES			+= $(SRC_DIR)/Test/Base/CH09/0902_thread.h
+# MOC_H_FILES			+= $(SRC_DIR)/Test/Base/CH10/1001_move_event.h
+
+MOC_H_FILES			= $(shell find $(SRC_DIR) -name '*.h' | xargs grep 'Q_OBJECT' | uniq | awk 'BEGIN{ORS=" ";FS=":"}{print $$1}')
+
+MOC_CPP_FILES		= $(patsubst $(SRC_DIR)/%.h, $(OBJ_DIR)/%.moc.cpp, $(MOC_H_FILES))
+MOC_OBJ_FILES		= $(patsubst $(OBJ_DIR)/%.moc.cpp, $(OBJ_DIR)/%.moc.o, $(MOC_CPP_FILES))
+
+SRC_FILES			= $(shell find $(SRC_DIR)/Test -name '*.cpp')
 SRC_FILES			+= $(SRC_DIR)/main.cpp
 
-# OBJ_STDAFX			= $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_STDAFX))
 OBJ_FILES			= $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
 # DEPEND_FILES		= $(patsubst %.o, %.d, $(OBJ_STDAFX))
 DEPEND_FILES		+= $(patsubst %.o, %.d, $(OBJ_FILES))
 
 $(shell mkdir -p $(dir $(DEPEND_FILES)) >/dev/null)
+$(shell mkdir -p $(dir $(MOC_OBJ_FILES)) >/dev/null)
 
 
 ############################################################################
@@ -74,10 +90,11 @@ LDFLAGS			=
 LDFLAGS			+= -L/usr/lib/x86_64-linux-gnu
 
 LDLIBS		    = 
-LDLIBS			+= -lQt5Core
+LDLIBS			+= -lQt5Core -lQt5Widgets -lQt5Gui
 
 # OBJ_FILE_LISTS  += $(OBJ_STDAFX)
 OBJ_FILE_LISTS	+= $(OBJ_FILES)
+OBJ_FILE_LISTS	+= $(MOC_OBJ_FILES)
 
 
 ############################################################################
@@ -86,18 +103,22 @@ all : $(PRJ_NAME)
 
 info : 
 	@echo
-	@echo '[INFO] $$(MAKE_DIR)      --> '$(MAKE_DIR)
-	@echo '[INFO] $$(HOME_DIR)      --> '$(HOME_DIR)
-	@echo '[INFO] $$(SRC_DIR)       --> '$(SRC_DIR)
-	@echo '[INFO] $$(OBJ_DIR)       --> '$(OBJ_DIR)
-	@echo '[INFO] $$(BIN_DIR)       --> '$(BIN_DIR)
-	@echo '[INFO] $$(EXT_DIR)       --> '$(EXT_DIR)
+	@echo '[INFO] $$(MAKE_DIR)			--> '$(MAKE_DIR)
+	@echo '[INFO] $$(HOME_DIR)			--> '$(HOME_DIR)
+	@echo '[INFO] $$(SRC_DIR)			--> '$(SRC_DIR)
+	@echo '[INFO] $$(OBJ_DIR)			--> '$(OBJ_DIR)
+	@echo '[INFO] $$(BIN_DIR)			--> '$(BIN_DIR)
+	@echo '[INFO] $$(EXT_DIR)			--> '$(EXT_DIR)
 	@echo
-	@echo '[INFO] $$(CXXFLAGS)      --> '$(CXXFLAGS)
-	@echo '[INFO] $$(LDFLAGS)       --> '$(LDFLAGS)
-	@echo '[INFO] $$(LDLIBS)        --> '$(LDLIBS)
-	@echo
-	@echo '[INFO] $$(SRC_FILES)		--> '$(SRC_FILES)
+	@echo '[INFO] $$(CXXFLAGS)			--> '$(CXXFLAGS)
+	@echo '[INFO] $$(LDFLAGS)			--> '$(LDFLAGS)
+	@echo '[INFO] $$(LDLIBS)			--> '$(LDLIBS)
+	@echo 
+	@echo '[INFO] $$(MOC_H_FILES)		--> '$(MOC_H_FILES)
+	@echo '[INFO] $$(MOC_CPP_FILES)		--> '$(MOC_CPP_FILES)
+	@echo '[INFO] $$(MOC_OBJ_FILES)		--> '$(MOC_OBJ_FILES)
+	@echo '[INFO] $$(SRC_FILES)			--> '$(SRC_FILES)
+	@echo '[INFO] $$(OBJ_FILES)			--> '$(OBJ_FILES)
 
 
 clean :
@@ -126,12 +147,15 @@ init_prj :
 # compile_obj_files: compile_stdafx
 
 # compile_prj: compile_obj_files $(OBJ_FILE_LISTS)
-compile_prj: $(OBJ_FILE_LISTS)
+
+compile_moc_files: $(MOC_CPP_FILES)
+
+compile_prj: compile_moc_files $(OBJ_FILE_LISTS)
 
 link_prj : compile_prj
 	@echo
 	@echo ' [ LINK ] '
-	$(CXX) -o $(BIN_DIR)/$(EXE_NAME) $(OBJ_FILES) $(EXT_OBJ_FILES) $(LDFLAGS) $(LDLIBS) 
+	$(CXX) -o $(BIN_DIR)/$(EXE_NAME) $(OBJ_FILES) $(MOC_OBJ_FILES) $(LDFLAGS) $(LDLIBS) 
 	@echo
 
 uninit_prj : link_prj
@@ -153,6 +177,13 @@ $(OBJ_FILES) : $(@:$(OBJ_DIR)/%.o=$(SRC_DIR)/%.cpp) $(@:$(OBJ_DIR)/%.o=$(SRC_DIR
 	@$(CXX) $(CXXFLAGS) -MMD -o $@ -c $(@:$(OBJ_DIR)/%.o=$(SRC_DIR)/%.cpp) $(LDFLAGS) $(LDLIBS) \
 		-MT $@ -MD -MP -MF $(@:$(OBJ_DIR)/%.o=$(OBJ_DIR)/%.d)
 	
+$(MOC_OBJ_FILES) : $(@:$(OBJ_DIR)/%.moc.o=$(OBJ_DIR)/%.moc.cpp) $(@:$(OBJ_DIR)/%.moc.o=$(SRC_DIR)/%.h) 
+	@echo '[ COMPILE ]' $(@:$(OBJ_DIR)/%.moc.o=%.moc.cpp) 
+	@$(CXX) $(CXXFLAGS) -o $@ -c $(@:$(OBJ_DIR)/%.moc.o=$(OBJ_DIR)/%.moc.cpp) $(LDFLAGS) $(LDLIBS) 
+
+$(MOC_CPP_FILES) : $(@:$(OBJ_DIR)/%.moc.cpp=$(SRC_DIR)/%.h)
+	@echo '[ QT_MOC ]' $(@:$(OBJ_DIR)/%.moc.cpp=$(SRC_DIR)/%.h)
+	@moc -o $@ $(@:$(OBJ_DIR)/%.moc.cpp=$(SRC_DIR)/%.h)
 
 -include $(DEPEND_FILES)
 
