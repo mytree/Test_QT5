@@ -45,11 +45,19 @@
 #include "Test/Base/CH09/0903_process.h"
 #include "Test/Base/CH10/1001_move_event.h"
 
+#include "Test/Ex02/CH01/Ex02_0101_version.h"
+#include "Test/Ex02/CH01/Ex02_0102_string.h"
+#include "Test/Ex02/CH01/Ex02_0103_date_time.h"
+
 int main(int nArgNum, char *ppArgs[]) {
 
 	int nRet = 0;
+
+	Ex02_0103_date_time test;
+	//Ex02_0102_string test;
+	//Ex02_0101_version test;
 	
-	C1001_TestMoveEvent test;
+	//C1001_TestMoveEvent test;
 	//C0903_TestProcess test;
 	//C0902_TestThread test;
 	//C0901_TestTimer test;

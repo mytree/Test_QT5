@@ -80,6 +80,12 @@
     <Filter Include="Header Files\Test\Base\CH10">
       <UniqueIdentifier>{7a0a9408-fc33-42f0-b6cf-4f8488c68559}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Test\Ex02">
+      <UniqueIdentifier>{02fe4142-5a95-441f-957d-8643d9ecf85d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Test\Ex02\CH01">
+      <UniqueIdentifier>{8d9682ee-2102-41fd-961c-91105a690d68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Test\Base\CH05\0502_table_dialog.cpp">
@@ -266,6 +272,15 @@
     </ClInclude>
     <ClInclude Include="Test\Base\CH09\0903_process.h">
       <Filter>Header Files\Test\Base\CH09</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH01\Ex02_0101_version.h">
+      <Filter>Header Files\Test\Ex02\CH01</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH01\Ex02_0102_string.h">
+      <Filter>Header Files\Test\Ex02\CH01</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH01\Ex02_0103_date_time.h">
+      <Filter>Header Files\Test\Ex02\CH01</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

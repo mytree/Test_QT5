@@ -44,6 +44,7 @@
 #include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QMdiArea>			// MDI Áö¿ø
 #include <QtGui/QPainter>
+#include <QtGui/qevent.h>
 #include <QtNetwork/QNetworkAccessManager>
 
 
