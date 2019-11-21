@@ -1,7 +1,7 @@
-./Bin/Test_QT5*
-./Bin64_Debug/Test_QT5*
-./Build/*.sdf
-./Build/*.opensdf
-./Build/Test_QT5/GeneratedFiles/
-./Obj/*
-./Res/*
+Bin/Test_QT5*
+Bin64_Debug/Test_QT5*
+Build/*.sdf
+Build/*.opensdf
+Build/Test_QT5/GeneratedFiles/
+Obj/*
+Res/*
