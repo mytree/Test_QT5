@@ -69,8 +69,11 @@ SRC_FILES			+= $(SRC_DIR)/main.cpp
 
 OBJ_FILES			= $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
+# HEADER_FILES		= $(shell find $(SRC_DIR) -name '*.h')
+
 # DEPEND_FILES		= $(patsubst %.o, %.d, $(OBJ_STDAFX))
 DEPEND_FILES		+= $(patsubst %.o, %.d, $(OBJ_FILES))
+# DEPEND_FILES		+= $(patsubst %.h, %.h.d, $(HEADER_FILES))
 
 $(shell mkdir -p $(dir $(DEPEND_FILES)) >/dev/null)
 $(shell mkdir -p $(dir $(MOC_OBJ_FILES)) >/dev/null)
