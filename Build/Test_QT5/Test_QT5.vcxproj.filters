@@ -86,6 +86,12 @@
     <Filter Include="Header Files\Test\Ex02\CH01">
       <UniqueIdentifier>{8d9682ee-2102-41fd-961c-91105a690d68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Test\Ex02\CH02">
+      <UniqueIdentifier>{e5cba9b1-340f-40c7-a172-1cc7f5695a93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Test\Ex02\CH03">
+      <UniqueIdentifier>{f78d1313-c6ca-468e-95bd-fd32c791e4f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Test\Base\CH05\0502_table_dialog.cpp">
@@ -156,6 +162,18 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Ex02_0303_move.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Ex02_0303_move.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Ex02_0304_disconnect.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Ex02_0304_disconnect.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +300,33 @@
     <ClInclude Include="Test\Ex02\CH01\Ex02_0103_date_time.h">
       <Filter>Header Files\Test\Ex02\CH01</Filter>
     </ClInclude>
+    <ClInclude Include="Test\Ex02\CH02\Ex02_0201_absolute.h">
+      <Filter>Header Files\Test\Ex02\CH02</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH02\Ex02_0202_vboxlayout.h">
+      <Filter>Header Files\Test\Ex02\CH02</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH02\Ex02_0203_buttons.h">
+      <Filter>Header Files\Test\Ex02\CH02</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH02\Ex02_0204_nesting.h">
+      <Filter>Header Files\Test\Ex02\CH02</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH02\Ex02_0205_form.h">
+      <Filter>Header Files\Test\Ex02\CH02</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH02\Ex02_0206_grid.h">
+      <Filter>Header Files\Test\Ex02\CH02</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH02\Ex02_0207_review.h">
+      <Filter>Header Files\Test\Ex02\CH02</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH03\Ex02_0301_click.h">
+      <Filter>Header Files\Test\Ex02\CH03</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH03\Ex02_0302_keypress.h">
+      <Filter>Header Files\Test\Ex02\CH03</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Test\Base\CH05\0501_main_window.h">
@@ -307,6 +352,15 @@
     </CustomBuild>
     <CustomBuild Include="Test\Base\CH10\1001_move_event.h">
       <Filter>Header Files\Test\Base\CH10</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Test\Ex02\CH03\Ex02_0303_move.h">
+      <Filter>Header Files\Test\Ex02\CH03</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Test\Ex02\CH03\Ex02_0304_disconnect.h">
+      <Filter>Header Files\Test\Ex02\CH03</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Test\Ex02\CH03\Ex02_0305_timer.h">
+      <Filter>Header Files\Test\Ex02\CH03</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

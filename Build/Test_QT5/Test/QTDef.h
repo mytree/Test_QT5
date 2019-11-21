@@ -26,6 +26,7 @@
 #include <QtWidgets/QBoxLayout>			// QHBoxLayout, QVBoxLayout
 #include <QtWidgets/QGridLayout>		// QGridLayout
 #include <QtWidgets/QStackedLayout>		// QStackedLayout
+#include <QtWidgets/QFormLayout>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>

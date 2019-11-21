@@ -49,11 +49,36 @@
 #include "Test/Ex02/CH01/Ex02_0102_string.h"
 #include "Test/Ex02/CH01/Ex02_0103_date_time.h"
 
+#include "Test/Ex02/CH02/Ex02_0201_absolute.h"
+#include "Test/Ex02/CH02/Ex02_0202_vboxlayout.h"
+#include "Test/Ex02/CH02/Ex02_0203_buttons.h"
+#include "Test/Ex02/CH02/Ex02_0204_nesting.h"
+#include "Test/Ex02/CH02/Ex02_0205_form.h"
+#include "Test/Ex02/CH02/Ex02_0206_grid.h"
+#include "Test/Ex02/CH02/Ex02_0207_review.h"
+#include "Test/Ex02/CH03/Ex02_0301_click.h"
+#include "Test/Ex02/CH03/Ex02_0302_keypress.h"
+#include "Test/Ex02/CH03/Ex02_0303_move.h"
+#include "Test/Ex02/CH03/Ex02_0304_disconnect.h"
+#include "Test/Ex02/CH03/Ex02_0305_timer.h"
+
 int main(int nArgNum, char *ppArgs[]) {
 
 	int nRet = 0;
 
-	Ex02_0103_date_time test;
+	Ex02_0305_timer_test test;
+	//Ex02_0304_disconnect_test test;
+	//Ex02_0303_move_test test;
+	//Ex02_0302_keypress_test test;
+	//Ex02_0301_click_test test;
+	//Ex02_0207_Test_Review test;
+	//Ex02_0206_Test_Grid test;
+	//Ex02_0205_Test_Form test;
+	//Ex02_0204_Test_Nesting test;
+	//Ex02_0203_Test_Buttons test;
+	//Ex02_0202_Test_VBoxLayout test;
+	//Ex02_0201_Test_Absolute test;
+	//Ex02_0103_date_time test;
 	//Ex02_0102_string test;
 	//Ex02_0101_version test;
 	
