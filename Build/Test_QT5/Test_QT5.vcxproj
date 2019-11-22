@@ -482,6 +482,15 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0401_line.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0402_color.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0403_pattern.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0404_transparent.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0405_donut.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0406_shape.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0407_line_gradient.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0408_radial_gradient.h" />
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0409_puff.h" />
     <ClInclude Include="Test\QTDef.h" />
     <ClInclude Include="Test\TestBase.h" />
   </ItemGroup>

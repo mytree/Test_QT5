@@ -92,6 +92,9 @@
     <Filter Include="Header Files\Test\Ex02\CH03">
       <UniqueIdentifier>{f78d1313-c6ca-468e-95bd-fd32c791e4f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Test\Ex02\CH04">
+      <UniqueIdentifier>{049f6bc1-1c4b-416a-94e6-71b7261ba8da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Test\Base\CH05\0502_table_dialog.cpp">
@@ -326,6 +329,33 @@
     </ClInclude>
     <ClInclude Include="Test\Ex02\CH03\Ex02_0302_keypress.h">
       <Filter>Header Files\Test\Ex02\CH03</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0401_line.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0402_color.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0403_pattern.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0404_transparent.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0405_donut.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0406_shape.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0407_line_gradient.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0408_radial_gradient.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH04\Ex02_0409_puff.h">
+      <Filter>Header Files\Test\Ex02\CH04</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

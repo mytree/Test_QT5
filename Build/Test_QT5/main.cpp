@@ -61,12 +61,30 @@
 #include "Test/Ex02/CH03/Ex02_0303_move.h"
 #include "Test/Ex02/CH03/Ex02_0304_disconnect.h"
 #include "Test/Ex02/CH03/Ex02_0305_timer.h"
+#include "Test/Ex02/CH04/Ex02_0401_line.h"
+#include "Test/Ex02/CH04/Ex02_0402_color.h"
+#include "Test/Ex02/CH04/Ex02_0403_pattern.h"
+#include "Test/Ex02/CH04/Ex02_0404_transparent.h"
+#include "Test/Ex02/CH04/Ex02_0405_donut.h"
+#include "Test/Ex02/CH04/Ex02_0406_shape.h"
+#include "Test/Ex02/CH04/Ex02_0407_line_gradient.h"
+#include "Test/Ex02/CH04/Ex02_0408_radial_gradient.h"
+#include "Test/Ex02/CH04/Ex02_0409_puff.h"
 
 int main(int nArgNum, char *ppArgs[]) {
 
 	int nRet = 0;
 
-	Ex02_0305_timer_test test;
+	Ex02_0409_puff_test test;
+	//Ex02_0408_radial_gradient_test test;
+	//Ex02_0407_line_gradient_test test;
+	//Ex02_0406_shape_test test;
+	//Ex02_0405_donut_test test;
+	//Ex02_0404_transparent_test test;
+	//Ex02_0403_pattern_test test;
+	//Ex02_0402_color_test test;
+	//Ex02_0401_line_test test;
+	//Ex02_0305_timer_test test;
 	//Ex02_0304_disconnect_test test;
 	//Ex02_0303_move_test test;
 	//Ex02_0302_keypress_test test;
