@@ -70,12 +70,76 @@
 #include "Test/Ex02/CH04/Ex02_0407_line_gradient.h"
 #include "Test/Ex02/CH04/Ex02_0408_radial_gradient.h"
 #include "Test/Ex02/CH04/Ex02_0409_puff.h"
+#include "Test/Ex02/CH05/Ex02_0501_file_size.h"
+#include "Test/Ex02/CH05/Ex02_0502_read_file.h"
+#include "Test/Ex02/CH05/Ex02_0503_write_file.h"
+#include "Test/Ex02/CH05/Ex02_0504_copy_file.h"
+#include "Test/Ex02/CH05/Ex02_0505_file_group.h"
+#include "Test/Ex02/CH05/Ex02_0506_last_read.h"
+#include "Test/Ex02/CH05/Ex02_0507_dir.h"
+#include "Test/Ex02/CH05/Ex02_0508_special_path.h"
+#include "Test/Ex02/CH05/Ex02_0509_file_path.h"
+#include "Test/Ex02/CH05/Ex02_0510_permission.h"
+#include "Test/Ex02/CH05/Ex02_0511_list_dir.h"
+
+#include "Test/EventChecker/ECMain.h"
+
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+
+#ifndef __linux__
+#include <crtdbg.h>
+#endif
+
+class ECUIManager : public ITestObject {
+private:
+	class ECUIHandler : public ECUIEvent {
+	} m_eventHandler;
+	ECMainWnd		*m_pMainWnd;
+
+public:
+	ECUIManager() {
+		m_pMainWnd = nullptr;
+	}
+	virtual int OnTest(int nArgNum, char **ppArgs) {
+		QApplication app(nArgNum, ppArgs);
+		m_pMainWnd = new ECMainWnd(&m_eventHandler);
+		m_pMainWnd->show();
+		int nRet = app.exec();
+		OnDestroy();
+		return nRet;
+	}
+
+	void OnDestroy() {
+		if (m_pMainWnd) {
+			delete m_pMainWnd;
+			m_pMainWnd = nullptr;
+		}
+	}
+};
 
 int main(int nArgNum, char *ppArgs[]) {
 
+#ifndef __linux__
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 	int nRet = 0;
 
-	Ex02_0409_puff_test test;
+	ECUIManager test;
+
+	//Ex02_0511_list_dir_test test;
+	//Ex02_0510_permission_test test;
+	//Ex02_0509_file_path_test test;
+	//Ex02_0508_special_path_test test;
+	//Ex02_0507_dir_test test;
+	//Ex02_0506_last_read_test test;
+	//Ex02_0505_file_group_test test;
+	//Ex02_0504_copy_file_test test;
+	//Ex02_0503_write_file_test test;
+	//Ex02_0502_read_file_test test;
+	//Ex02_0501_file_size_test test;
+	//Ex02_0409_puff_test test;
 	//Ex02_0408_radial_gradient_test test;
 	//Ex02_0407_line_gradient_test test;
 	//Ex02_0406_shape_test test;

@@ -95,6 +95,15 @@
     <Filter Include="Header Files\Test\Ex02\CH04">
       <UniqueIdentifier>{049f6bc1-1c4b-416a-94e6-71b7261ba8da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Test\Ex02\CH05">
+      <UniqueIdentifier>{9b9bce8b-6e1b-475a-8cfd-a429386f129f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Test\EventChecker">
+      <UniqueIdentifier>{c4873d74-bcc1-4304-9cdf-3cd0286c30ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Test\EventChecker">
+      <UniqueIdentifier>{b878d413-7887-4529-b7c1-0802fd0e9279}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Test\Base\CH05\0502_table_dialog.cpp">
@@ -177,6 +186,12 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_Ex02_0304_disconnect.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\EventChecker\WndScreen.cpp">
+      <Filter>Source Files\Test\EventChecker</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\EventChecker\ECMain.cpp">
+      <Filter>Source Files\Test\EventChecker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,6 +371,48 @@
     </ClInclude>
     <ClInclude Include="Test\Ex02\CH04\Ex02_0409_puff.h">
       <Filter>Header Files\Test\Ex02\CH04</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0501_file_size.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0502_read_file.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0503_write_file.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0504_copy_file.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0505_file_group.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0506_last_read.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0507_dir.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0508_special_path.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0509_file_path.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0510_permission.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Ex02\CH05\Ex02_0511_list_dir.h">
+      <Filter>Header Files\Test\Ex02\CH05</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\EventChecker\ECMain.h">
+      <Filter>Header Files\Test\EventChecker</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\EventChecker\ECUIEvent.h">
+      <Filter>Header Files\Test\EventChecker</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\EventChecker\WndScreen.h">
+      <Filter>Header Files\Test\EventChecker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <ctime>
+#include <iomanip>
 
 #define cout_post_sz(text, ch, num) { \
 	std::string strText(text);	strText += " ";	unsigned int nTextSize = strText.size(); \
