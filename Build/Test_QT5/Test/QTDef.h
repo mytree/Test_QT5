@@ -40,10 +40,13 @@
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QTableWidget>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QMdiArea>			// MDI Áö¿ø
+#include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QMessageBox>
 #include <QtGui/QPainter>
 #include <QtGui/qevent.h>
 #include <QtNetwork/QNetworkAccessManager>

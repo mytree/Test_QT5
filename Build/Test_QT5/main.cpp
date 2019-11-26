@@ -82,6 +82,8 @@
 #include "Test/Ex02/CH05/Ex02_0510_permission.h"
 #include "Test/Ex02/CH05/Ex02_0511_list_dir.h"
 
+#include "Test/Temp/T001_QTableWidget.h"
+
 #include "Test/EventChecker/ECMain.h"
 
 #define _CRTDBG_MAP_ALLOC
@@ -127,6 +129,8 @@ int main(int nArgNum, char *ppArgs[]) {
 	int nRet = 0;
 
 	ECUIManager test;
+
+	//T001_QTableWidgetTest test;
 
 	//Ex02_0511_list_dir_test test;
 	//Ex02_0510_permission_test test;
