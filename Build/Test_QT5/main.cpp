@@ -1,5 +1,7 @@
 
+
 #include "Test/TestBase.h"
+
 #include "Test/Base/CH02/0201_hello.h"
 #include "Test/Base/CH02/0202_hello2.h"
 #include "Test/Base/CH02/0203_push_button.h"
@@ -82,43 +84,12 @@
 #include "Test/Ex02/CH05/Ex02_0510_permission.h"
 #include "Test/Ex02/CH05/Ex02_0511_list_dir.h"
 
+
 #include "Test/Temp/T001_QTableWidget.h"
 
 #include "Test/EventChecker/ECMain.h"
+#include "Test/Temp/T002_MultiScene.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-
-#ifndef __linux__
-#include <crtdbg.h>
-#endif
-
-class ECUIManager : public ITestObject {
-private:
-	class ECUIHandler : public ECUIEvent {
-	} m_eventHandler;
-	ECMainWnd		*m_pMainWnd;
-
-public:
-	ECUIManager() {
-		m_pMainWnd = nullptr;
-	}
-	virtual int OnTest(int nArgNum, char **ppArgs) {
-		QApplication app(nArgNum, ppArgs);
-		m_pMainWnd = new ECMainWnd(&m_eventHandler);
-		m_pMainWnd->show();
-		int nRet = app.exec();
-		OnDestroy();
-		return nRet;
-	}
-
-	void OnDestroy() {
-		if (m_pMainWnd) {
-			delete m_pMainWnd;
-			m_pMainWnd = nullptr;
-		}
-	}
-};
 
 int main(int nArgNum, char *ppArgs[]) {
 
@@ -128,7 +99,7 @@ int main(int nArgNum, char *ppArgs[]) {
 
 	int nRet = 0;
 
-	ECUIManager test;
+	T002_MultiSceneTest test;
 
 	//T001_QTableWidgetTest test;
 

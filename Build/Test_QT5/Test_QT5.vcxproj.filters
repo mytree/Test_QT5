@@ -214,6 +214,18 @@
     <ClCompile Include="Test\EventChecker\ECMain.cpp">
       <Filter>Source Files\Test\EventChecker</Filter>
     </ClCompile>
+    <ClCompile Include="Test\QTDef.cpp">
+      <Filter>Source Files\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\TestBase.cpp">
+      <Filter>Source Files\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_T002_MultiScene.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_T002_MultiScene.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Test\TestBase.h">
@@ -472,6 +484,9 @@
     </CustomBuild>
     <CustomBuild Include="Test\EventChecker\ECMain.h">
       <Filter>Header Files\Test\EventChecker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Test\Temp\T002_MultiScene.h">
+      <Filter>Header Files\Test\Temp</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

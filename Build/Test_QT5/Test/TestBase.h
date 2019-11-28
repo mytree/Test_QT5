@@ -6,6 +6,19 @@
 #include <string>
 #include <ctime>
 #include <iomanip>
+#include <thread>
+#include <chrono>
+#include <atomic>
+#include <mutex>
+
+//--------------------------------------------------------------------------
+//	메모리 누수 검사 목적
+#ifndef __linux__
+#	define _CRTDBG_MAP_ALLOC
+#	include <stdlib.h>
+#	include <crtdbg.h>
+#endif
+//--------------------------------------------------------------------------
 
 #define cout_post_sz(text, ch, num) { \
 	std::string strText(text);	strText += " ";	unsigned int nTextSize = strText.size(); \
@@ -14,6 +27,11 @@
 	if (nRemainedNum > 0) oss << std::string(nRemainedNum, ch); \
 	oss << std::endl; \
 	std::cout << oss.str(); \
+}
+
+namespace CUtil {
+	std::string ToBuildDateString(char szDelim = '-');
+	std::string ToBuildTimeString(char szDelim = ':');
 }
 
 #include "QTDef.h"

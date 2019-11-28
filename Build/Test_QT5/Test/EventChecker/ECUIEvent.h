@@ -1,7 +1,7 @@
 
 #pragma once
 
-enum ECDivTypeEnum {
+enum class ECDivTypeEnum {
 	DIV_1 = 1, 
 	DIV_4 = 4, 
 	DIV_9 = 9, 

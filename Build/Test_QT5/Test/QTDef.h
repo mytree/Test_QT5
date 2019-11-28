@@ -1,8 +1,6 @@
 
 #pragma once
 
-
-//#include <QtCore/QCoreApplication>
 #include <QtCore/QTimer>
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
@@ -51,7 +49,6 @@
 #include <QtGui/qevent.h>
 #include <QtNetwork/QNetworkAccessManager>
 
-
 #if defined(WIN32) | defined(WIN64)
 #	if defined(DEBUG) | defined(_DEBUG)
 #		pragma comment(lib, "qtmaind.lib")
@@ -72,4 +69,13 @@
 #		pragma comment(lib, "Qt5Svg.lib")			// QSvgWidget, QSvgRenderer
 #	endif
 #endif
+
+namespace QUtil {
+	//!	@brief	BMP Binary Image(BGR24) 를 QImage 로 변환
+	bool ConvertBGR24ToQImage(QImage &convImg, unsigned char* pSrcData, int nSrcW, int nSrcH);
+
+	//!	@brief	BMP Binary Image(ARGB32) 를 QImage 로 변환
+	bool ConvertARGB32ToQImage(QImage &convImg, unsigned char* pSrcData, int nSrcW, int nSrcH);
+
+}
 
