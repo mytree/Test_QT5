@@ -37,7 +37,7 @@ ECMainWnd::ECMainWnd(ECUIEvent* pEvent) {
 	startTimer(1000);
 
 	m_nDivType = ECDivTypeEnum::DIV_1;
-	m_pWndScreen->SetDivision(m_nDivType);
+	m_pWndScreen->SetDivision(m_nDivType, 0);
 
 	connect(m_pDiv1, &QPushButton::clicked, this, &ECMainWnd::onClick_DIV_1);
 	connect(m_pDiv4, &QPushButton::clicked, this, &ECMainWnd::onClick_DIV_4);
@@ -68,7 +68,7 @@ void ECMainWnd::timerEvent(QTimerEvent *pEvent) {
 	default:		
 		return;
 	}
-	m_pWndScreen->SetDivision(m_nDivType);
+	m_pWndScreen->SetDivision(m_nDivType, 0);
 }
 
 void ECMainWnd::onClick_DIV_1() {

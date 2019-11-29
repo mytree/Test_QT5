@@ -16,10 +16,13 @@ private:
 
 	QGridLayout				m_grid;
 	CWndScreen				m_wndScreen;
+	QPushButton				m_testBtn;
 
-	
+	bool					m_bIsFullScreen;
+
 public:
 	T002_MultiScene(QWidget* parent = Q_NULLPTR) : QWidget(parent) {
+		m_bIsFullScreen = false;
 		m_bIsTesting = true;
 		const QString imgPath[TEST_IMG_NUM] = {
 			"../Res/ch1.bmp", "../Res/ch2.bmp", "../Res/ch3.bmp", "../Res/ch4.bmp",
@@ -38,9 +41,10 @@ public:
 		if (bRet == false) { qWarning("Failed to get image data.");	return; }
 
 		m_grid.addWidget(&m_wndScreen, 0, 0);
+		m_grid.addWidget(&m_testBtn, 1, 0);
 		setLayout(&m_grid);
 
-		startTimer(1000);
+		startTimer(1000);		// 일정 주기로 화면분할 요청 진행
 
 		m_pTestThread = new std::thread(&T002_MultiScene::OnTestThreadProc, this);
 	}
@@ -63,9 +67,23 @@ public:
 		return m_wndScreen.SetChImage(nChIdx, pBuf);
 	}
 
+	void ToggleFullScreen() {
+		if (m_bIsFullScreen == false) {
+			m_testBtn.hide();
+			showFullScreen();
+		}
+		else {
+			m_testBtn.show();
+			showNormal();
+		}
+		m_bIsFullScreen = !m_bIsFullScreen;
+	}
+
 protected:
 	void timerEvent(QTimerEvent *pEvent) override {
 
+		int nMaxDiv = static_cast<int>(ECDivTypeEnum::MAX_DIV);
+		int nBeginChIdx = rand() % nMaxDiv;
 		ECDivTypeEnum nDivType = m_wndScreen.GetDivType();
 
 		switch (nDivType) {
@@ -77,7 +95,18 @@ protected:
 		default:
 			return;
 		}
-		m_wndScreen.SetDivision(nDivType);
+
+		std::ostringstream ossLog;
+		int nDivNum = static_cast<int>(nDivType);
+		int nDivMax = static_cast<int>(ECDivTypeEnum::MAX_DIV);
+		int nChIdx = nBeginChIdx;
+		ossLog << "[SetDivision] DIV(" << nDivNum << ") BEGIN(" << (nChIdx + 1) << ") ";
+		for (int nDivIdx = 0; nDivIdx < nDivNum; nDivIdx++) {
+			ossLog << (nChIdx + 1) << " ";
+			nChIdx = (nChIdx + 1) % nDivMax;
+		}
+		qDebug(ossLog.str().c_str());
+		m_wndScreen.SetDivision(nDivType, nBeginChIdx);
 	}
 
 	void OnTestThreadProc() {
@@ -95,6 +124,16 @@ protected:
 					qWarning("Failed to set channel image. ch(%d)", nChIdx);
 				}
 			}
+		}
+	}
+
+	virtual void keyReleaseEvent(QKeyEvent *pEvent) {
+		int nKey = pEvent->key();
+		switch (nKey) {
+		default:	return;
+		case Qt::Key_F2:
+			ToggleFullScreen();
+			break;
 		}
 	}
 };

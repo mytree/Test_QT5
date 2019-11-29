@@ -1,12 +1,17 @@
 
 #pragma once
 
+#include <Qt>
 #include <QtCore/QTimer>
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QStandardItemModel>
+#include <QtGui/QScreen>
+#include <QtGui/QPainter>
+#include <QtGui/qevent.h>
+#include <QtNetwork/QNetworkAccessManager>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QPushButton>
@@ -45,9 +50,7 @@
 #include <QtWidgets/QMdiArea>			// MDI Áö¿ø
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QMessageBox>
-#include <QtGui/QPainter>
-#include <QtGui/qevent.h>
-#include <QtNetwork/QNetworkAccessManager>
+
 
 #if defined(WIN32) | defined(WIN64)
 #	if defined(DEBUG) | defined(_DEBUG)

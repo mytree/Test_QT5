@@ -2,6 +2,7 @@
 #include "../TestBase.h"
 #include "WndScreen.h"
 
+#include <QtGui/QGuiApplication>
 
 CWndCell::CWndCell(QWidget *parent) : QLabel(parent) {
 	m_nFrameRectR = m_nFrameRectG = m_nFrameRectB = 0; m_nFrameRectA = 255;
@@ -11,24 +12,58 @@ void CWndCell::SetFrameRectColor(unsigned char r, unsigned char g, unsigned char
 	m_nFrameRectR = r;	m_nFrameRectG = g;	m_nFrameRectB = b;	m_nFrameRectA = a;
 	//repaint();
 }
+void CWndCell::SetTitleText(QString strText) {
+	m_strTitleTop = strText;
+}
 
 void CWndCell::paintEvent(QPaintEvent *pEvent) {
 	Q_UNUSED(pEvent);
 
-	int nX = 1, nY = 1, nW = width() - (nX * 2), nH = height() - (nY * 2);	// 영역 계산, 가장자리 1 pixel 남김
-	if (nW <= 0 || nH <= 0) return;											// 가로/세로 길이 잘 못 되었으면 skip
-
-	int nCellW = width(), nCellH = height();
-	const QPixmap* pPixmap = pixmap();
-	if (pPixmap) {
-		pPixmap->scaled(nCellW, nCellH, Qt::KeepAspectRatio);
-	}
-	QLabel::paintEvent(pEvent);
-	QColor frameRectColor(m_nFrameRectR, m_nFrameRectG, m_nFrameRectB, m_nFrameRectA);		// 영역 테두리 색상
+	// 영역 계산, 가장자리 남김
+	const int BORDER_SIZE = 1;
+	QRect rtDraw; rtDraw.setRect(BORDER_SIZE, BORDER_SIZE, width() - (BORDER_SIZE * 2), height() - (BORDER_SIZE * 2));
+	if (rtDraw.width() <= 0 || rtDraw.height() <= 0) return;			// 가로/세로 길이 잘 못 되었으면 skip
 
 	QPainter qp(this);
+	
+	// 배경 이미지 그리기
+	QPixmap* pPixmap = const_cast<QPixmap*>(pixmap());
+	if (pPixmap) { 
+		QPainter qp2(pPixmap);
+		//paintTitle(qp2, rtDraw);
+		qp.drawPixmap(rtDraw, *pPixmap);
+		
+	}
+
+	// 영역 테두리 그리기
+	QColor frameRectColor(m_nFrameRectR, m_nFrameRectG, m_nFrameRectB, m_nFrameRectA);		// 영역 테두리 색상
 	qp.setPen(Qt::SolidLine);		//qp.setBrush(frameRectColor);
-	qp.drawRect(nX, nY, nW, nH);															// 영역 테두리 그림
+	qp.drawRect(rtDraw);	
+
+	paintTitle(qp, rtDraw);
+	
+}
+
+void CWndCell::paintTitle(QPainter &qp, QRect rtArea) {
+	QString strTitle = m_strTitleTop;	// text();
+	if (strTitle.size() <= 0) return;
+
+	// 타이틀 글자 그리기
+	QFont fontTitle = qp.font();
+	fontTitle.setPointSize(20);
+	fontTitle.setBold(true);
+	qp.setFont(fontTitle);
+	qp.setPen(QColor(0, 0, 0));
+	
+	//QTextOption textOpt;	textOpt.setAlignment(Qt::AlignRight);
+	QTextOption textOpt;	textOpt.setAlignment(Qt::AlignLeft);
+	QRect rtTitleTop(rtArea);
+	int nTitleH = rtTitleTop.height() / 4;	if (nTitleH < 20) nTitleH = 20;
+	
+	rtTitleTop.setHeight(nTitleH);		qp.drawText(rtTitleTop, strTitle, textOpt);
+	rtTitleTop.moveTo(2, 2);			qp.drawText(rtTitleTop, strTitle, textOpt);
+	rtTitleTop.moveTo(-1, -1);	qp.setPen(QColor(250, 250, 250));	qp.drawText(rtTitleTop, strTitle, textOpt);
+
 }
 
 //--------------------------------------------------------------------------
@@ -43,13 +78,22 @@ CWndScreen::CWndScreen(QWidget* pParent) : QWidget(pParent) {
 			//CWndCell* pCell = new CWndCell(this);	pCell->setText(oss.str().c_str());
 			QString strText = "CH " + QString::number(nChIdx + 1);
 			CWndCell* pCell = new CWndCell(this);
-			pCell->setText(strText);
-			pCell->setScaledContents(true);
+			pCell->SetTitleText(strText);
 			pCell->hide();
 			m_chList.push_back(pCell);
 		}
 	}
+	m_bIsFirstCallDiv = true;
 	m_nDivType = ECDivTypeEnum::DIV_1;
+	m_nBeginChIdx = 0;
+
+	m_bIsFullScreen = false;
+
+	QRect rtScreen;
+	QList<QScreen*> scrList = qApp->screens();
+	for (int nIdx = 0; nIdx < scrList.size(); nIdx++) {
+		rtScreen = scrList[nIdx]->geometry();
+	}
 
 	startTimer(30);
 }
@@ -75,9 +119,18 @@ ECDivTypeEnum CWndScreen::GetDivType() {
 	return m_nDivType;
 }
 
-void CWndScreen::SetDivision(ECDivTypeEnum nDivType) {
+void CWndScreen::SetDivision(ECDivTypeEnum nDivType, int nBeginChIdx) {
 
 	std::lock_guard<std::mutex> lock(m_chListMutex);
+
+	int nMaxDiv = static_cast<int>(ECDivTypeEnum::MAX_DIV);
+	if (nBeginChIdx < 0 || nBeginChIdx >= nMaxDiv) {
+		nBeginChIdx = m_nBeginChIdx;
+	}
+
+	// 이전 분할 방식과 동일한 분할 요청이면 skip (단, 처음 호출이면 그냥 진행)
+	if (m_bIsFirstCallDiv == false && m_nDivType == nDivType) return;	
+	if (m_bIsFirstCallDiv) m_bIsFirstCallDiv = false;
 
 	int nGridIdx = 0, nCIdx = 0, nRIdx = 0;
 	CWndCell* pCell = nullptr;
@@ -102,12 +155,11 @@ void CWndScreen::SetDivision(ECDivTypeEnum nDivType) {
 	int nCellW = width() / nColNum;
 	int nCellH = height() / nRowNum;
 	int nGridNum = nColNum * nRowNum;
-	int nMaxDiv = static_cast<int>(ECDivTypeEnum::MAX_DIV);
-	int nBeginPos = 0, nEndPos = (nBeginPos + (int)nDivType) % nMaxDiv, nPos = 0;
+	int nBeginPos = nBeginChIdx, nEndPos = (nBeginPos + (int)nDivType) % nMaxDiv, nPos = 0;
 	for (nGridIdx = 0; nGridIdx < (int)nDivType; nGridIdx++) {
 		nCIdx = nGridIdx % nColNum;
 		nRIdx = nGridIdx / nColNum;
-		nPos = (nBeginPos + nGridIdx) % (int)nDivType;
+		nPos = (nBeginPos + nGridIdx) % (int)nMaxDiv;
 		pCell = m_chList[nPos];
 		pCell->move(nCellW * nCIdx, nCellH * nRIdx);
 		pCell->setFixedSize(nCellW, nCellH);
@@ -117,6 +169,7 @@ void CWndScreen::SetDivision(ECDivTypeEnum nDivType) {
 	}
 
 	m_nDivType = nDivType;
+	m_nBeginChIdx = nBeginChIdx;
 }
 
 bool CWndScreen::SetChImage(int nChIdx, QPixmap* pSrcBuf) {
@@ -161,3 +214,5 @@ void CWndScreen::timerEvent(QTimerEvent *pEvent) {
 		}
 	}
 }
+
+	

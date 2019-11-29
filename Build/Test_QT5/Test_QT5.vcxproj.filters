@@ -196,15 +196,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_T001_QTableWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_WndScreen.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_WndScreen.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Test\EventChecker\WndScreen.cpp">
-      <Filter>Source Files\Test\EventChecker</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ECMain.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -225,6 +216,15 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_T002_MultiScene.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_WndScreen.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_WndScreen.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\EventChecker\WndScreen.cpp">
+      <Filter>Source Files\Test\EventChecker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -479,14 +479,14 @@
     <CustomBuild Include="Test\Temp\T001_QTableWidget.h">
       <Filter>Header Files\Test\Temp</Filter>
     </CustomBuild>
-    <CustomBuild Include="Test\EventChecker\WndScreen.h">
-      <Filter>Header Files\Test\EventChecker</Filter>
-    </CustomBuild>
     <CustomBuild Include="Test\EventChecker\ECMain.h">
       <Filter>Header Files\Test\EventChecker</Filter>
     </CustomBuild>
     <CustomBuild Include="Test\Temp\T002_MultiScene.h">
       <Filter>Header Files\Test\Temp</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Test\EventChecker\WndScreen.h">
+      <Filter>Header Files\Test\EventChecker</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
