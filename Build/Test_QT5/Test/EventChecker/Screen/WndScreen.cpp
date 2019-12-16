@@ -1,72 +1,10 @@
 
-#include "../TestBase.h"
 #include "WndScreen.h"
+#include "./WndCell.h"
+#include "./WndScreenInner.h"
 
 #include <QtGui/QGuiApplication>
 
-CWndCell::CWndCell(QWidget *parent) : QLabel(parent) {
-	m_nFrameRectR = m_nFrameRectG = m_nFrameRectB = 0; m_nFrameRectA = 255;
-}
-
-void CWndCell::SetFrameRectColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-	m_nFrameRectR = r;	m_nFrameRectG = g;	m_nFrameRectB = b;	m_nFrameRectA = a;
-	//repaint();
-}
-void CWndCell::SetTitleText(QString strText) {
-	m_strTitleTop = strText;
-}
-
-void CWndCell::paintEvent(QPaintEvent *pEvent) {
-	Q_UNUSED(pEvent);
-
-	// 영역 계산, 가장자리 남김
-	const int BORDER_SIZE = 1;
-	QRect rtDraw; rtDraw.setRect(BORDER_SIZE, BORDER_SIZE, width() - (BORDER_SIZE * 2), height() - (BORDER_SIZE * 2));
-	if (rtDraw.width() <= 0 || rtDraw.height() <= 0) return;			// 가로/세로 길이 잘 못 되었으면 skip
-
-	QPainter qp(this);
-	
-	// 배경 이미지 그리기
-	QPixmap* pPixmap = const_cast<QPixmap*>(pixmap());
-	if (pPixmap) { 
-		QPainter qp2(pPixmap);
-		//paintTitle(qp2, rtDraw);
-		qp.drawPixmap(rtDraw, *pPixmap);
-		
-	}
-
-	// 영역 테두리 그리기
-	QColor frameRectColor(m_nFrameRectR, m_nFrameRectG, m_nFrameRectB, m_nFrameRectA);		// 영역 테두리 색상
-	qp.setPen(Qt::SolidLine);		//qp.setBrush(frameRectColor);
-	qp.drawRect(rtDraw);	
-
-	paintTitle(qp, rtDraw);
-	
-}
-
-void CWndCell::paintTitle(QPainter &qp, QRect rtArea) {
-	QString strTitle = m_strTitleTop;	// text();
-	if (strTitle.size() <= 0) return;
-
-	// 타이틀 글자 그리기
-	QFont fontTitle = qp.font();
-	fontTitle.setPointSize(20);
-	fontTitle.setBold(true);
-	qp.setFont(fontTitle);
-	qp.setPen(QColor(0, 0, 0));
-	
-	//QTextOption textOpt;	textOpt.setAlignment(Qt::AlignRight);
-	QTextOption textOpt;	textOpt.setAlignment(Qt::AlignLeft);
-	QRect rtTitleTop(rtArea);
-	int nTitleH = rtTitleTop.height() / 4;	if (nTitleH < 20) nTitleH = 20;
-	
-	rtTitleTop.setHeight(nTitleH);		qp.drawText(rtTitleTop, strTitle, textOpt);
-	rtTitleTop.moveTo(2, 2);			qp.drawText(rtTitleTop, strTitle, textOpt);
-	rtTitleTop.moveTo(-1, -1);	qp.setPen(QColor(250, 250, 250));	qp.drawText(rtTitleTop, strTitle, textOpt);
-
-}
-
-//--------------------------------------------------------------------------
 
 //CWndScreen::CWndScreen(QWidget* pParent) : QTableWidget(pParent) {
 CWndScreen::CWndScreen(QWidget* pParent) : QWidget(pParent) {
@@ -78,22 +16,26 @@ CWndScreen::CWndScreen(QWidget* pParent) : QWidget(pParent) {
 			//CWndCell* pCell = new CWndCell(this);	pCell->setText(oss.str().c_str());
 			QString strText = "CH " + QString::number(nChIdx + 1);
 			CWndCell* pCell = new CWndCell(this);
-			pCell->SetTitleText(strText);
+			//pCell->SetTitleTopText(strText, Qt::AlignmentFlag::AlignRight);
+			pCell->SetTitleTopText(strText);
+			pCell->SetTitleBottomText(strText, Qt::AlignmentFlag::AlignRight);
 			pCell->hide();
 			m_chList.push_back(pCell);
 		}
 	}
 	m_bIsFirstCallDiv = true;
+	m_bIsResized = true;
 	m_nDivType = ECDivTypeEnum::DIV_1;
 	m_nBeginChIdx = 0;
 
-	m_bIsFullScreen = false;
+	// 스크린 영역 조사
+	//QRect rtScreen;
+	//QList<QScreen*> scrList = qApp->screens();
+	//for (int nIdx = 0; nIdx < scrList.size(); nIdx++) {
+	//	rtScreen = scrList[nIdx]->geometry();
+	//}
 
-	QRect rtScreen;
-	QList<QScreen*> scrList = qApp->screens();
-	for (int nIdx = 0; nIdx < scrList.size(); nIdx++) {
-		rtScreen = scrList[nIdx]->geometry();
-	}
+	m_pWndInner = new CWndScreenInner(this);
 
 	startTimer(30);
 }
@@ -113,6 +55,10 @@ CWndScreen::~CWndScreen() {
 		m_imgList.clear();
 		m_recvList.clear();
 	}
+
+	if (m_pWndInner) {
+		delete m_pWndInner;	m_pWndInner = nullptr;
+	}
 }
 
 ECDivTypeEnum CWndScreen::GetDivType() {
@@ -129,8 +75,9 @@ void CWndScreen::SetDivision(ECDivTypeEnum nDivType, int nBeginChIdx) {
 	}
 
 	// 이전 분할 방식과 동일한 분할 요청이면 skip (단, 처음 호출이면 그냥 진행)
-	if (m_bIsFirstCallDiv == false && m_nDivType == nDivType) return;	
+	if (m_bIsFirstCallDiv == false && m_bIsResized == false && m_nDivType == nDivType && nBeginChIdx == m_nBeginChIdx) return;
 	if (m_bIsFirstCallDiv) m_bIsFirstCallDiv = false;
+	if (m_bIsResized) m_bIsResized = false;
 
 	int nGridIdx = 0, nCIdx = 0, nRIdx = 0;
 	CWndCell* pCell = nullptr;
@@ -164,6 +111,7 @@ void CWndScreen::SetDivision(ECDivTypeEnum nDivType, int nBeginChIdx) {
 		pCell->move(nCellW * nCIdx, nCellH * nRIdx);
 		pCell->setFixedSize(nCellW, nCellH);
 		pCell->setAlignment(Qt::AlignCenter);
+		pCell->update();
 		pCell->show();
 		//setCellWidget(nRIdx, nCIdx, pCell);
 	}
@@ -196,6 +144,7 @@ bool CWndScreen::SetChImage(int nChIdx, QPixmap* pSrcBuf) {
 }
 
 void CWndScreen::resizeEvent(QResizeEvent *event) {
+	m_bIsResized = true;
 	SetDivision(m_nDivType);
 }
 
@@ -205,14 +154,88 @@ void CWndScreen::timerEvent(QTimerEvent *pEvent) {
 		std::lock_guard<std::mutex> lock(m_chListMutex);
 
 		QPixmap* pBuf = nullptr;
+		int nInnerIdx = m_pWndInner->GetChIdx();
 		int nChIdx = 0, nMaxDiv = static_cast<int>(ECDivTypeEnum::MAX_DIV);
 		for (nChIdx = 0; nChIdx < nMaxDiv; nChIdx++) {
 			if (m_recvList[nChIdx] == false) continue;		// 수신된 이미지 없으면 skip
 			m_recvList[nChIdx] = false;
 			pBuf = m_imgList[nChIdx];
 			m_chList[nChIdx]->setPixmap(*pBuf);
+
+			if (m_pWndInner->isVisible() == false) continue;
+			if (nChIdx != nInnerIdx) continue;
+			m_pWndInner->SetChImage(nChIdx, pBuf);			// 이미지 설정
 		}
 	}
 }
 
+void CWndScreen::mouseDoubleClickEvent(QMouseEvent *pEvent) {
 	
+	int nFindChIdx = -1;
+	bool bIsChExist = false;
+	QPoint mousePos = pEvent->pos();
+	QRect rtCh;
+	CWndCell* pCell = nullptr;
+
+	{	// 마우스 위치에 속한 채널 인덱스 계산
+		std::lock_guard<std::mutex> lock(m_chListMutex);
+		int nChIdx = -1;
+		int nDivNum = static_cast<int>(m_nDivType);					// 현재 분할 수
+		int nMaxDiv = static_cast<int>(ECDivTypeEnum::MAX_DIV);		// 최대 분할 수
+		for (int nDivIdx = 0; nDivIdx < nDivNum; nDivIdx++) {		// 현재 분할 수 만큼 반복
+			nChIdx = (m_nBeginChIdx + nDivIdx) % nMaxDiv;			// 현재 채널 인덱스
+			pCell = m_chList[nChIdx];								// 채널 인덱스에 맞는 실제 채널 화면
+			rtCh = pCell->geometry();								// 채널 화면 영역
+			if (rtCh.contains(mousePos) == false) continue;			// 채널 화면 영역이 마우스 위치를 포함하는지 확인
+			bIsChExist = true;
+			nFindChIdx = nChIdx;
+			break;
+		}
+	}
+	if (bIsChExist == false) return;						// 선택한 화면에 채널이 존재하지 않으면 skip
+
+	//if (bIsChExist == false) qDebug("X(%d) Y(%d)", mousePos.x(), mousePos.y());
+	//else qDebug("X(%d) Y(%d) CH(%d)", mousePos.x(), mousePos.y(), nFindChIdx + 1);
+
+	if (m_pWndInner) {
+		std::ostringstream oss;	oss << "채널 " << nFindChIdx + 1;
+		m_pWndInner->setWindowTitle(QString::fromLocal8Bit(oss.str().c_str()));
+		
+		{
+			std::lock_guard<std::mutex> lock(m_chListMutex);
+			QPixmap* pBuf = m_imgList[nFindChIdx];
+			if (pBuf) {
+				m_pWndInner->SetChImage(nFindChIdx, pBuf);
+			}
+			if (pCell) {
+				m_pWndInner->SetDrawInfo(*pCell);				// 해당 Cell 과 동일한 그림 정보 설정
+			}
+		}
+		m_pWndInner->resize(640, 480);
+		m_pWndInner->show();
+		m_pWndInner->setFocus();
+	}
+
+	//if (m_pWndInner) {
+	//	//m_pWndInner->resize(640, 480);
+
+	//	QRect rtScreen;
+	//	QList<QScreen*> scrList = qApp->screens();				// 스크린 영역 조사
+	//	if (scrList.size() > 0) { rtScreen = scrList[0]->geometry(); }
+	//	
+	//	QWidget* pParent = static_cast<QWidget*>(parent());
+	//	QRect rtAreaInParent = pParent->geometry();		// check pParent ...
+
+	//	if (rtScreen.isEmpty() == false &&
+	//		pParent && rtAreaInParent.isEmpty() == false) {
+
+	//		m_pWndInner->move(rtScreen.x(), rtScreen.y());
+	//		m_pWndInner->resize(rtScreen.size());
+	//		
+	//		//setParent(m_pWndInner);
+	//		
+	//		m_pWndInner->show();
+	//	}
+	//	
+	//}
+}

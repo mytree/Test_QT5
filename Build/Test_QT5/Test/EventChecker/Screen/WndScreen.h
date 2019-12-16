@@ -1,32 +1,11 @@
 
 #pragma once
 
-#include "ECUIEvent.h"
-#include "../TestBase.h"
+#include "../ECUIEvent.h"
+#include "../../TestBase.h"
 
-class CWndCell : public QLabel {
-	Q_OBJECT
-private:
-	unsigned char			m_nFrameRectR;
-	unsigned char			m_nFrameRectG;
-	unsigned char			m_nFrameRectB;
-	unsigned char			m_nFrameRectA;
-	QString					m_strTitleTop;
-
-public:
-	CWndCell(QWidget *parent = nullptr);
-	void SetFrameRectColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
-	void SetTitleText(QString strText);
-
-protected:
-	inline void setText(const QString &atext) = delete;
-
-private:
-	virtual void paintEvent(QPaintEvent *event) override;
-
-	void paintTitle(QPainter &qp, QRect rtArea);
-};
-
+class CWndCell;
+class CWndScreenInner;
 class CWndScreen : public QWidget {
 	Q_OBJECT
 public:
@@ -47,9 +26,9 @@ private:
 	ECDivTypeEnum				m_nDivType;			//!< 현재 분할 종류
 	int							m_nBeginChIdx;		//!< 현재 시작 채널 인덱스(0 ~ MAX_DIV)
 	bool						m_bIsFirstCallDiv;	//!< 분할 요청이 안 되었는지 유무(true: 아직 호출 안 됨)
+	bool						m_bIsResized;		//!< 화면 크기가 변경 되었는지 여부(true: 화면 크기 변경됨)
 
-	bool						m_bIsFullScreen;
-	QPoint						m_parentPos;
+	CWndScreenInner*			m_pWndInner;
 
 public:
 	CWndScreen(QWidget *pParent = nullptr);
@@ -57,11 +36,20 @@ public:
 
 	ECDivTypeEnum GetDivType();
 
+	//!	@brief	화면 분할
+	//!	@param	nDivType		[in] 분할 화면 종류
+	//!	@oaran	nBeginChIdx		[in] 시작 화면 인덱스(0부터 시작)
 	void SetDivision(ECDivTypeEnum nDivType, int nBeginChIdx = -1);
+
+	//!	@brief	화면 이미지 설정
+	//!	@param	nChIdx			[in] 출력 화면 인덱스(0부터 시작)
+	//!	@param	pBuf			[in] 이미지 정보
+	//!	@return	true 는 설정 성공
 	bool SetChImage(int nChIdx, QPixmap* pBuf);
 
 private:
 	virtual void resizeEvent(QResizeEvent *pEvent) override;
 	virtual void timerEvent(QTimerEvent *pEvent) override;
+	virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 	
 };

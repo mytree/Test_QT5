@@ -85,11 +85,8 @@
 #include "Test/Ex02/CH05/Ex02_0511_list_dir.h"
 
 
-#include "Test/Temp/T001_QTableWidget.h"
-
-#include "Test/EventChecker/ECMain.h"
-#include "Test/Temp/T002_MultiScene.h"
-
+#include "Test/EventChecker/T001_QTableWidget.h"
+#include "Test/EventChecker/T002_MultiScene.h"			// 분할 화면 테스트
 
 int main(int nArgNum, char *ppArgs[]) {
 
@@ -100,7 +97,6 @@ int main(int nArgNum, char *ppArgs[]) {
 	int nRet = 0;
 
 	T002_MultiSceneTest test;
-
 	//T001_QTableWidgetTest test;
 
 	//Ex02_0511_list_dir_test test;
