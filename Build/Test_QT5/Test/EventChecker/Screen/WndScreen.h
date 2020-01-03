@@ -1,14 +1,18 @@
 
 #pragma once
 
-#include "../ECUIEvent.h"
 #include "../../TestBase.h"
+#include "../ECType.h"
 
 class CWndCell;
 class CWndScreenInner;
 class CWndScreen : public QWidget {
 	Q_OBJECT
 public:
+	enum {
+		DetectAreaNum		= 2,							// 검지 영역 개수
+	};
+
 	using ChList = std::vector<CWndCell*>;
 	using ChIter = std::vector<CWndCell*>::iterator;
 	using ImgList = std::map<int, QPixmap*>;				// [채널인덱스(0부터시작), QPixmap]
@@ -46,6 +50,17 @@ public:
 	//!	@param	pBuf			[in] 이미지 정보
 	//!	@return	true 는 설정 성공
 	bool SetChImage(int nChIdx, QPixmap* pBuf);
+
+	//!	@brief	화면 그림 정보 설정
+	//!	@param	nChIdx			[in] 출력 화면 인덱스(0부터 시작)
+	//!	@param	di				[in] 그림 정보
+	//!	@return 성공 여부
+	bool SetDrawInfo(int nChIdx, ECDrawInfo &di);
+
+	//!	@brief	영역 인덱스 별 색상 정의
+	//!	@param	nAreaIdx		[in] 영역 인덱스(0부터 시작)
+	//!	@param	areaColor		[in] 영역 색상
+	void SetAreaColor(int nAreaIdx, QColor &areaColor);
 
 private:
 	virtual void resizeEvent(QResizeEvent *pEvent) override;

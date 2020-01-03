@@ -4,7 +4,90 @@
 #include "../EventChecker/Screen/WndScreen.h"
 #include "../TestBase.h"
 
-class T002_MultiScene : public QWidget {
+class CDIVTestEvent {
+public:
+	virtual void OnClick_DIV1() = 0;
+	virtual void OnClick_DIV4() = 0;
+	virtual void OnClick_DIV9() = 0;
+	virtual void OnClick_DIV16() = 0;
+	virtual void OnClick_DIV24() = 0;
+	virtual void OnClick_FullScreen() = 0;
+	virtual void OnClick_test1() = 0;
+};
+
+class CDIVTestWnd : public QWidget {
+	Q_OBJECT
+private:
+	QVBoxLayout				m_layout_div;
+	QPushButton				m_btn_DIV1;
+	QPushButton				m_btn_DIV4;
+	QPushButton				m_btn_DIV9;
+	QPushButton				m_btn_DIV16;
+	QPushButton				m_btn_DIV24;
+	QPushButton				m_btn_FullScreen;
+	QPushButton				m_btn_test1;
+
+	CDIVTestEvent			*m_pEvent;
+public:
+	CDIVTestWnd(CDIVTestEvent *pEvent) {
+		m_pEvent = pEvent;
+		m_btn_DIV1.setText(QString::fromLocal8Bit(" 1 채널"));
+		m_btn_DIV4.setText(QString::fromLocal8Bit(" 4 채널"));
+		m_btn_DIV9.setText(QString::fromLocal8Bit(" 9 채널"));
+		m_btn_DIV16.setText(QString::fromLocal8Bit("16 채널"));
+		m_btn_DIV24.setText(QString::fromLocal8Bit("24 채널"));
+		m_btn_FullScreen.setText(QString::fromLocal8Bit("전체화면"));
+		m_btn_test1.setText(QString::fromLocal8Bit("채널전환 테스트 시작"));
+
+		connect(&m_btn_DIV1, &QPushButton::clicked, this, &CDIVTestWnd::OnClick_DIV1);
+		connect(&m_btn_DIV4, &QPushButton::clicked, this, &CDIVTestWnd::OnClick_DIV4);
+		connect(&m_btn_DIV9, &QPushButton::clicked, this, &CDIVTestWnd::OnClick_DIV9);
+		connect(&m_btn_DIV16, &QPushButton::clicked, this, &CDIVTestWnd::OnClick_DIV16);
+		connect(&m_btn_DIV24, &QPushButton::clicked, this, &CDIVTestWnd::OnClick_DIV24);
+		connect(&m_btn_FullScreen, &QPushButton::clicked, this, &CDIVTestWnd::OnClick_FullScreen);
+		connect(&m_btn_test1, &QPushButton::clicked, this, &CDIVTestWnd::OnClick_test1);
+
+		m_layout_div.setAlignment(Qt::AlignTop);
+		m_layout_div.addWidget(&m_btn_DIV1);			
+		m_layout_div.addWidget(&m_btn_DIV4);			
+		m_layout_div.addWidget(&m_btn_DIV9);			
+		m_layout_div.addWidget(&m_btn_DIV16);			
+		m_layout_div.addWidget(&m_btn_DIV24);			
+		m_layout_div.addWidget(&m_btn_FullScreen);		
+		m_layout_div.addWidget(&m_btn_test1);			
+
+		setLayout(&m_layout_div);
+	}
+
+	void setText_test1(QString strText) {
+		m_btn_test1.setText(strText);
+	}
+
+protected:
+	void OnClick_DIV1() {
+		if (m_pEvent) m_pEvent->OnClick_DIV1();
+	}
+	void OnClick_DIV4() {
+		if (m_pEvent) m_pEvent->OnClick_DIV4();
+	}
+	void OnClick_DIV9() {
+		if (m_pEvent) m_pEvent->OnClick_DIV9();
+	}
+	void OnClick_DIV16() {
+		if (m_pEvent) m_pEvent->OnClick_DIV16();
+	}
+	void OnClick_DIV24() {
+		if (m_pEvent) m_pEvent->OnClick_DIV24();
+	}
+	void OnClick_FullScreen() {
+		if (m_pEvent) m_pEvent->OnClick_FullScreen();
+	}
+	void OnClick_test1() {
+		if (m_pEvent) m_pEvent->OnClick_test1();
+	}
+};
+
+class T002_MultiScene : public QWidget, public CDIVTestEvent {
 	Q_OBJECT
 private:
 	const static int TEST_IMG_NUM = 24;	// 4;
@@ -15,21 +98,15 @@ private:
 	std::atomic<bool>		m_bIsTesting;
 	std::atomic<bool>		m_bTestThreadAlive;
 
-	QVBoxLayout				m_layout;
-	QHBoxLayout				m_layout_btn;
+	QHBoxLayout				m_layout;
 	CWndScreen				m_wndScreen;
-	QPushButton				m_btn_DIV1;
-	QPushButton				m_btn_DIV4;
-	QPushButton				m_btn_DIV9;
-	QPushButton				m_btn_DIV16;
-	QPushButton				m_btn_DIV24;
-	QPushButton				m_btn_FullScreen;
-	QPushButton				m_btn_test1;
-
+	CDIVTestWnd				*m_pWndTestDIV;
+	
 	bool					m_bIsFullScreen;
 
 public:
 	T002_MultiScene(QWidget* parent = Q_NULLPTR) : QWidget(parent) {
+		m_pWndTestDIV = new CDIVTestWnd(this);
 		std::srand(time(nullptr));
 		m_bIsFullScreen = false;
 		m_bTestThreadAlive = true;	m_bIsTesting = false;
@@ -57,36 +134,21 @@ public:
 		}
 		if (bRet == false) { qWarning("Failed to get image data.");	return; }
 
-		m_btn_DIV1.setText(QString::fromLocal8Bit(" 1 채널"));	
-		m_btn_DIV4.setText(QString::fromLocal8Bit(" 4 채널"));		
-		m_btn_DIV9.setText(QString::fromLocal8Bit(" 9 채널"));		
-		m_btn_DIV16.setText(QString::fromLocal8Bit("16 채널"));		
-		m_btn_DIV24.setText(QString::fromLocal8Bit("24 채널"));		
-		m_btn_FullScreen.setText(QString::fromLocal8Bit("전체화면"));
-		m_btn_test1.setText(QString::fromLocal8Bit("채널전환 테스트 시작"));
+		QSizePolicy spTestDIV(QSizePolicy::Preferred, QSizePolicy::Preferred);	spTestDIV.setHorizontalStretch(1);
+		QSizePolicy spScreen(QSizePolicy::Preferred, QSizePolicy::Preferred);	spScreen.setHorizontalStretch(4);
 
-		connect(&m_btn_DIV1, &QPushButton::clicked, this, &T002_MultiScene::OnClick_DIV1);
-		connect(&m_btn_DIV4, &QPushButton::clicked, this, &T002_MultiScene::OnClick_DIV4);
-		connect(&m_btn_DIV9, &QPushButton::clicked, this, &T002_MultiScene::OnClick_DIV9);
-		connect(&m_btn_DIV16, &QPushButton::clicked, this, &T002_MultiScene::OnClick_DIV16);
-		connect(&m_btn_DIV24, &QPushButton::clicked, this, &T002_MultiScene::OnClick_DIV24);
-		connect(&m_btn_FullScreen, &QPushButton::clicked, this, &T002_MultiScene::OnClick_FullScreen);
-		connect(&m_btn_test1, &QPushButton::clicked, this, &T002_MultiScene::OnClick_test1);
-		
-		m_layout_btn.addWidget(&m_btn_DIV1);
-		m_layout_btn.addWidget(&m_btn_DIV4);
-		m_layout_btn.addWidget(&m_btn_DIV9);
-		m_layout_btn.addWidget(&m_btn_DIV16);
-		m_layout_btn.addWidget(&m_btn_DIV24);
-		m_layout_btn.addWidget(&m_btn_FullScreen);
-		m_layout_btn.addWidget(&m_btn_test1);
+		m_pWndTestDIV->setSizePolicy(spTestDIV);
+		m_wndScreen.setSizePolicy(spScreen);
 
-		m_layout.addWidget(&m_wndScreen);	//m_grid.addWidget(&m_wndScreen, 0, 0);
-		m_layout.addLayout(&m_layout_btn);	// m_grid.addWidget(&m_testBtn, 1, 0);
-		setLayout(&m_layout);				//setLayout(&m_grid);
+		m_layout.addWidget(m_pWndTestDIV);
+		m_layout.addWidget(&m_wndScreen);	
+		setLayout(&m_layout);				
 
 		int nBeginIdx = rand() % (int)ECDivTypeEnum::MAX_DIV;
 		m_wndScreen.SetDivision(ECDivTypeEnum::DIV_24, nBeginIdx);
+
+		m_wndScreen.SetAreaColor(0, QColor(255, 0, 0));
+		m_wndScreen.SetAreaColor(1, QColor(0, 255, 0));
 
 		startTimer(1000);		// 일정 주기로 화면분할 요청 진행
 
@@ -103,6 +165,9 @@ public:
 			if (m_pBuf[nIdx]) { delete[] m_pBuf[nIdx]; m_pBuf[nIdx] = nullptr; }
 			if (m_pImg[nIdx]) { delete[] m_pImg[nIdx]; m_pImg[nIdx] = nullptr; }
 		}
+		if (m_pWndTestDIV) {
+			delete m_pWndTestDIV;	m_pWndTestDIV = nullptr;
+		}
 	}
 	bool SetUIEvent(ECUIEvent* pEvent) {
 		return false;
@@ -113,13 +178,15 @@ public:
 
 	void ToggleFullScreen() {
 		if (m_bIsFullScreen == false) {
-			m_btn_DIV1.hide();	m_btn_DIV4.hide();	m_btn_DIV9.hide();	m_btn_DIV16.hide();	m_btn_DIV24.hide(); 
-			m_btn_FullScreen.hide();	m_btn_test1.hide();
+			//m_btn_DIV1.hide();	m_btn_DIV4.hide();	m_btn_DIV9.hide();	m_btn_DIV16.hide();	m_btn_DIV24.hide(); 
+			//m_btn_FullScreen.hide();	m_btn_test1.hide();
+			m_pWndTestDIV->hide();
 			showFullScreen();
 		}
 		else {
-			m_btn_DIV1.show();	m_btn_DIV4.show();	m_btn_DIV9.show();	m_btn_DIV16.show();	m_btn_DIV24.show();
-			m_btn_FullScreen.show();	m_btn_test1.show();
+			//m_btn_DIV1.show();	m_btn_DIV4.show();	m_btn_DIV9.show();	m_btn_DIV16.show();	m_btn_DIV24.show();
+			//m_btn_FullScreen.show();	m_btn_test1.show();
+			m_pWndTestDIV->show();
 			showNormal();
 		}
 		m_bIsFullScreen = !m_bIsFullScreen;
@@ -237,11 +304,11 @@ protected:
 	void OnClick_test1() {
 		if (m_bIsTesting == false) {
 			m_bIsTesting = true;
-			m_btn_test1.setText(QString::fromLocal8Bit("화면전환 테스트 중지"));
+			m_pWndTestDIV->setText_test1(QString::fromLocal8Bit("화면전환 테스트 중지"));
 		}
 		else {
 			m_bIsTesting = false;
-			m_btn_test1.setText(QString::fromLocal8Bit("화면전환 테스트 시작"));
+			m_pWndTestDIV->setText_test1(QString::fromLocal8Bit("화면전환 테스트 시작"));
 		}
 	}
 };

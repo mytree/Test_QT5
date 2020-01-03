@@ -10,6 +10,8 @@
 #include <chrono>
 #include <atomic>
 #include <mutex>
+#include <vector>
+#include <map>
 
 //--------------------------------------------------------------------------
 //	메모리 누수 검사 목적

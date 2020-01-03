@@ -1,12 +1,7 @@
 
 #include "./WndCell.h"
 
-CWndCell::DrawInfo::DrawInfo() {
-	nFrameRectR = nFrameRectG = nFrameRectB = 0; nFrameRectA = 255;
-	nTitleTopAlign = nTitleBottomAlign = Qt::AlignmentFlag::AlignLeft;
-}
-
-CWndCell::CWndCell(QWidget *parent) : QLabel(parent) {
+CWndCell::CWndCell(QWidget *parent, CWndCellEvent* pEvent) : QLabel(parent), m_pEvent(pEvent) {
 }
 
 void CWndCell::SetFrameRectColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
@@ -27,8 +22,8 @@ void CWndCell::SetTitleBottomText(QString strText, Qt::AlignmentFlag nAlign) {
 	m_drawInfo.nTitleBottomAlign = nAlign;
 }
 
-CWndCell::DrawInfo CWndCell::GetDrawInfo() {
-	CWndCell::DrawInfo di;
+ECDrawInfo CWndCell::GetDrawInfo() {
+	ECDrawInfo di;
 	{
 		std::lock_guard<std::mutex> lock(m_propMutex);
 		di = m_drawInfo;
@@ -36,7 +31,7 @@ CWndCell::DrawInfo CWndCell::GetDrawInfo() {
 	return di;
 }
 
-bool CWndCell::SetDrawInfo(CWndCell::DrawInfo& di) {
+bool CWndCell::SetDrawInfo(ECDrawInfo& di) {
 	std::lock_guard<std::mutex> lock(m_propMutex);
 	m_drawInfo.nFrameRectR = di.nFrameRectR;
 	m_drawInfo.nFrameRectG = di.nFrameRectG;
@@ -46,7 +41,90 @@ bool CWndCell::SetDrawInfo(CWndCell::DrawInfo& di) {
 	m_drawInfo.nTitleTopAlign = di.nTitleTopAlign;
 	m_drawInfo.strTitleBottom = di.strTitleBottom;
 	m_drawInfo.nTitleBottomAlign = di.nTitleBottomAlign;
+
+	m_drawInfo.lineList = di.lineList;
+	m_drawInfo.lineColorList = di.lineColorList;
 	return true;
+}
+
+//!	@brief	영역을 구성하는 정점 정보 추가
+bool CWndCell::AddAreaPoint(int nAreaIdx, QPoint areaPoint, bool bClosed) {
+	if (nAreaIdx < 0) return false;
+	if (areaPoint.x() < 0 || areaPoint.y() < 0) return false;
+	std::lock_guard<std::mutex> lock(m_propMutex);
+	ECPolylineIter fIter = m_drawInfo.lineList.find(nAreaIdx);				// 영역 인덱스 검사
+	if (fIter == m_drawInfo.lineList.end()) {								// 해당 영역 없으면 새로 추가
+		ECPointList pointList;
+		m_drawInfo.lineList.insert(std::make_pair(nAreaIdx, pointList));
+		fIter = m_drawInfo.lineList.find(nAreaIdx);
+	}
+	fIter->second.push_back(areaPoint);										// 정점 추가
+	size_t pointNum = fIter->second.size();									// 영역을 구성하는 정점 개수 조사
+	const int nMaxPointNum = 30;
+	if (pointNum > nMaxPointNum) {											// 일정 개수 이상일 경우
+		int nDeleteNum = (bClosed) ? pointNum - nMaxPointNum - 1 : pointNum - nMaxPointNum;
+		for (int nIdx = 0; nIdx < nDeleteNum; nIdx++)
+			fIter->second.erase(fIter->second.begin());							// 제일 오래된 정점 제거
+	}
+	if (bClosed) {															// true 일 경우 처음 정점을 추가, 닫힌 polygon 을 만듦
+		QPoint firstPos = *fIter->second.begin();
+		fIter->second.push_back(firstPos);
+	}
+	return true;
+}
+
+//!	@brief	영역 정보 제거
+bool CWndCell::ClearArea(int nAreaIdx) {
+	std::lock_guard<std::mutex> lock(m_propMutex);
+	ECPolylineIter fIter = m_drawInfo.lineList.find(nAreaIdx);				// 영역 인덱스 검사
+	if (fIter == m_drawInfo.lineList.end()) {								// 해당 영역 없으면 skip
+		return false;
+	}
+	m_drawInfo.lineList.erase(fIter);										// 검색된 목록 제거
+	return true;
+}
+
+void CWndCell::ClearAllArea() {
+	std::lock_guard<std::mutex> lock(m_propMutex);
+	m_drawInfo.lineList.clear();
+}
+
+//!	@brief	영역 인덱스 별 색상 정의
+//!	@param	nAreaIdx		[in] 영역 인덱스(0부터 시작)
+//!	@param	areaColor		[in] 영역 색상
+void CWndCell::SetAreaColor(int nAreaIdx, QColor &areaColor) {
+	std::lock_guard<std::mutex> lock(m_propMutex);
+	m_drawInfo.lineColorList[nAreaIdx] = areaColor;
+}
+
+void CWndCell::mouseMoveEvent(QMouseEvent *pEvent) {
+	QPoint mousePos = pEvent->pos();
+	Qt::MouseButton nMouseType = pEvent->button();
+	//qDebug("[MouseMove] Pos(%d, %d) ", mousePos.x(), mousePos.y());
+
+	if (m_pEvent) {
+		m_pEvent->OnWndCellMouseMove(mousePos, nMouseType);
+	}
+}
+
+void CWndCell::resizeEvent(QResizeEvent *pEvent) {
+	QSize newSize = pEvent->size();
+	std::lock_guard<std::mutex> lock(m_propMutex);
+	QSize oldSize = m_drawInfo.canvasSize;
+	int nLineNum = m_drawInfo.lineList.size();
+	if (nLineNum == 0) {
+		m_drawInfo.canvasSize = newSize;	return;
+	}
+	
+	todo...
+
+	//	oldSize : oldPos = newSize : newPos
+	//	oldW : oldX = newW : newX(?)	=>	newX(?) = oldX * newW / oldW
+	ECPolylineIter bIter = m_drawInfo.lineList.begin();
+	ECPolylineIter eIter = m_drawInfo.lineList.end();
+	for (ECPolylineIter iter = bIter; iter != eIter; iter++) {
+
+	}
 }
 
 void CWndCell::paintEvent(QPaintEvent *pEvent) {
@@ -57,7 +135,7 @@ void CWndCell::paintEvent(QPaintEvent *pEvent) {
 	QRect rtDraw; rtDraw.setRect(BORDER_SIZE, BORDER_SIZE, width() - (BORDER_SIZE * 2), height() - (BORDER_SIZE * 2));
 	if (rtDraw.width() <= 0 || rtDraw.height() <= 0) return;			// 가로/세로 길이 잘 못 되었으면 skip
 
-	DrawInfo di;
+	ECDrawInfo di;
 	{	std::lock_guard<std::mutex> lock(m_propMutex); 	di = m_drawInfo; }
 
 	QColor frameRectColor(di.nFrameRectR, di.nFrameRectG, di.nFrameRectB, di.nFrameRectA);			// 영역 테두리 색상
@@ -72,12 +150,20 @@ void CWndCell::paintEvent(QPaintEvent *pEvent) {
 		qp.drawPixmap(rtDraw, *pPixmap);
 	}
 
-	// 영역 테두리 그리기
+	// 전체 영역 테두리 그리기
 	qp.setPen(Qt::SolidLine);		//qp.setBrush(frameRectColor);
 	qp.drawRect(rtDraw);
 
+	// 상,하 Title 그리기
 	paintTitleTop(qp, rtDraw, strTitleTop, nTitleTopAlign);
 	paintTitleBottom(qp, rtDraw, strTitleTop, nTitleBottomAlign);
+
+	// 설정영역 그리기
+	paintArea(qp, rtDraw, di);
+
+	if (m_pEvent) {
+		m_pEvent->OnWndCellPaint(qp);
+	}
 }
 
 void CWndCell::paintTitleTop(QPainter &qp, QRect rtArea, QString strTitle, Qt::AlignmentFlag nAlign) {
@@ -138,3 +224,29 @@ void CWndCell::paintTitleBottom(QPainter &qp, QRect rtArea, QString strTitle, Qt
 	qp.drawText(rtTitle, strTitle, textOpt);
 }
 
+void CWndCell::paintArea(QPainter &qp, QRect rtArea, ECDrawInfo& di) {
+	int nAreaIdx = -1, nPointNum = 0;
+	ECPolylineIter bIter = di.lineList.begin();
+	ECPolylineIter eIter = di.lineList.end();
+	ECPointIter eIter2, iter2;
+	ECAreaColorIter colorIter;
+	QPoint pos1, pos2;
+	QColor lineColor, defColor = QColor(0, 0, 0);
+	for (ECPolylineIter iter = bIter; iter != eIter; iter++) {
+		nAreaIdx = iter->first;
+		nPointNum = iter->second.size();
+		if (nPointNum <= 1) continue;
+		colorIter = di.lineColorList.find(nAreaIdx);
+		lineColor = (colorIter == di.lineColorList.end()) ? defColor : colorIter->second;
+		iter2 = iter->second.begin();
+		eIter2 = iter->second.end();
+		pos1 = *iter2;	iter2++;
+		while (iter2 != eIter2) {
+			pos2 = *iter2;
+			qp.setPen(lineColor);
+			qp.drawLine(pos1, pos2);
+			pos1 = pos2;
+			iter2++;
+		}
+	}
+}

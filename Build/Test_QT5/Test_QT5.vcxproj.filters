@@ -450,7 +450,7 @@
     <ClInclude Include="Test\Ex02\CH05\Ex02_0511_list_dir.h">
       <Filter>Header Files\Test\Ex02\CH05</Filter>
     </ClInclude>
-    <ClInclude Include="Test\EventChecker\ECUIEvent.h">
+    <ClInclude Include="Test\EventChecker\ECType.h">
       <Filter>Header Files\Test\EventChecker</Filter>
     </ClInclude>
   </ItemGroup>

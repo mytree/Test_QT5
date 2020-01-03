@@ -35,7 +35,7 @@ CWndScreen::CWndScreen(QWidget* pParent) : QWidget(pParent) {
 	//	rtScreen = scrList[nIdx]->geometry();
 	//}
 
-	m_pWndInner = new CWndScreenInner(this);
+	m_pWndInner = new CWndScreenInner(this, DetectAreaNum);
 
 	startTimer(30);
 }
@@ -141,6 +141,35 @@ bool CWndScreen::SetChImage(int nChIdx, QPixmap* pSrcBuf) {
 	m_recvList[nChIdx] = true;
 
 	return true;
+}
+
+//!	@brief	화면 그림 정보 설정
+//!	@param	nChIdx			[in] 출력 화면 인덱스(0부터 시작)
+//!	@param	di				[in] 그림 정보
+//!	@return 성공 여부
+bool CWndScreen::SetDrawInfo(int nChIdx, ECDrawInfo &di) {
+	std::lock_guard<std::mutex> lock(m_chListMutex);
+	int nMaxDiv = static_cast<int>(ECDivTypeEnum::MAX_DIV);
+	if (nChIdx < 0 || nChIdx >= nMaxDiv) return false;
+	CWndCell* pCell = m_chList[nChIdx];
+	if (pCell == nullptr) return false;
+	return pCell->SetDrawInfo(di);
+}
+
+//!	@brief	영역 인덱스 별 색상 정의
+//!	@param	nAreaIdx		[in] 영역 인덱스(0부터 시작)
+//!	@param	areaColor		[in] 영역 색상
+void CWndScreen::SetAreaColor(int nAreaIdx, QColor &areaColor) {
+
+	std::lock_guard<std::mutex> lock(m_chListMutex);
+	CWndCell* pCell = nullptr;
+
+	ChIter chIter = m_chList.begin();
+	ChIter chEIter = m_chList.end();
+	for (; chIter != chEIter; chIter++) {
+		pCell = static_cast<CWndCell*>(*chIter);
+		pCell->SetAreaColor(nAreaIdx, areaColor);
+	}
 }
 
 void CWndScreen::resizeEvent(QResizeEvent *event) {
