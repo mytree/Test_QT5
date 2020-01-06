@@ -50,4 +50,7 @@ private:
 	void paintTitleTop(QPainter &qp, QRect rtArea, QString strTitle, Qt::AlignmentFlag nAlign);
 	void paintTitleBottom(QPainter &qp, QRect rtArea, QString strTitle, Qt::AlignmentFlag nAlign);
 	void paintArea(QPainter &qp, QRect rtArea, ECDrawInfo& di);
+
+	int GetRatio(int nA, int nB, int nC);		//!< 비율값 계산( A : B = C : ?, ? = B * C / A ), A 가 0 이면 0 반환
+	QPoint GetRatioPos(QSize size1, QPoint pos, QSize size2);	//!< 비율에 맞는 위치 계산
 };

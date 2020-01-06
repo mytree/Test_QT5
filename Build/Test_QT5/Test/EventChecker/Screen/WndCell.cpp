@@ -42,6 +42,7 @@ bool CWndCell::SetDrawInfo(ECDrawInfo& di) {
 	m_drawInfo.strTitleBottom = di.strTitleBottom;
 	m_drawInfo.nTitleBottomAlign = di.nTitleBottomAlign;
 
+	m_drawInfo.canvasSize = di.canvasSize;
 	m_drawInfo.lineList = di.lineList;
 	m_drawInfo.lineColorList = di.lineColorList;
 	return true;
@@ -107,24 +108,8 @@ void CWndCell::mouseMoveEvent(QMouseEvent *pEvent) {
 	}
 }
 
+//!	@brief	화면 크기 변경 시 이벤트 처리
 void CWndCell::resizeEvent(QResizeEvent *pEvent) {
-	QSize newSize = pEvent->size();
-	std::lock_guard<std::mutex> lock(m_propMutex);
-	QSize oldSize = m_drawInfo.canvasSize;
-	int nLineNum = m_drawInfo.lineList.size();
-	if (nLineNum == 0) {
-		m_drawInfo.canvasSize = newSize;	return;
-	}
-	
-	todo...
-
-	//	oldSize : oldPos = newSize : newPos
-	//	oldW : oldX = newW : newX(?)	=>	newX(?) = oldX * newW / oldW
-	ECPolylineIter bIter = m_drawInfo.lineList.begin();
-	ECPolylineIter eIter = m_drawInfo.lineList.end();
-	for (ECPolylineIter iter = bIter; iter != eIter; iter++) {
-
-	}
 }
 
 void CWndCell::paintEvent(QPaintEvent *pEvent) {
@@ -159,7 +144,7 @@ void CWndCell::paintEvent(QPaintEvent *pEvent) {
 	paintTitleBottom(qp, rtDraw, strTitleTop, nTitleBottomAlign);
 
 	// 설정영역 그리기
-	paintArea(qp, rtDraw, di);
+	paintArea(qp, pEvent->rect(), di);
 
 	if (m_pEvent) {
 		m_pEvent->OnWndCellPaint(qp);
@@ -226,6 +211,10 @@ void CWndCell::paintTitleBottom(QPainter &qp, QRect rtArea, QString strTitle, Qt
 
 void CWndCell::paintArea(QPainter &qp, QRect rtArea, ECDrawInfo& di) {
 	int nAreaIdx = -1, nPointNum = 0;
+	int nAreaW = rtArea.width(), nAreaH = rtArea.height();							// 그리기 영역 좌표
+	int nCanvasW = di.canvasSize.width(), nCanvasH = di.canvasSize.height();		// OSD 좌표 기준 크기
+	bool bIsSetCanvasSize = (nCanvasW > 0 && nCanvasH > 0);							// 크기가 설정 되었는지 여부
+	
 	ECPolylineIter bIter = di.lineList.begin();
 	ECPolylineIter eIter = di.lineList.end();
 	ECPointIter eIter2, iter2;
@@ -240,13 +229,29 @@ void CWndCell::paintArea(QPainter &qp, QRect rtArea, ECDrawInfo& di) {
 		lineColor = (colorIter == di.lineColorList.end()) ? defColor : colorIter->second;
 		iter2 = iter->second.begin();
 		eIter2 = iter->second.end();
-		pos1 = *iter2;	iter2++;
+		pos1 = (bIsSetCanvasSize == false) ? *iter2 : GetRatioPos(di.canvasSize, *iter2, rtArea.size());
+		iter2++;
 		while (iter2 != eIter2) {
-			pos2 = *iter2;
+			pos2 = (bIsSetCanvasSize == false) ? *iter2 : GetRatioPos(di.canvasSize, *iter2, rtArea.size());
 			qp.setPen(lineColor);
 			qp.drawLine(pos1, pos2);
 			pos1 = pos2;
 			iter2++;
 		}
 	}
+}
+
+//!	@brief	비율값 계산( A : B = C : ?, ? = B * C / A ), A 가 0 이면 0 반환
+int CWndCell::GetRatio(int nA, int nB, int nC) {
+	if (nA == 0) return 0;	// X = ( B * C ) / A, A 가 0 이면 예외 발생함
+	int nRet = (nB * nC) / (1.0 * nA);
+	return nRet;
+}
+
+//!	@brief	비율에 맞는 위치 계산
+QPoint CWndCell::GetRatioPos(QSize size1, QPoint pos, QSize size2) {
+	QPoint retPos;
+	retPos.setX(GetRatio(size1.width(), pos.x(), size2.width()));
+	retPos.setY(GetRatio(size1.height(), pos.y(), size2.height()));
+	return retPos;
 }
